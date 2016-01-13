@@ -27,9 +27,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	local geninfo = "[mg] generates..."
 	minetest.chat_send_all(geninfo)
 
-	local vm = minetest.get_mapgen_object("voxelmanip")
-	local data = vm:get_data()
---	local area = VoxelArea:new{MinEdge=emin, MaxEdge=emax}
+	local vm, emin, emax = minetest.get_mapgen_object("voxelmanip")
 
 	local center = {}
 	for x=minp.x,maxp.x do
@@ -52,9 +50,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	local t2 = os.clock()
 	local calcdelay = string.format("%.2fs", t2 - t1)
 
-	vm:set_data(data)
-	vm:calc_lighting()
-	vm:update_liquids()
+	vm:calc_lighting(nil, nil, false)
 	vm:write_to_map()
 
 	local t3 = os.clock()
