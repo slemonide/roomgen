@@ -1,7 +1,18 @@
 local path = minetest.get_modpath("roomgen")
+
+corridors = {
+			{name="X"},
+			{name="L"},
+			{name="T"},
+			{name="I"}, -- straight corridor
+			{name="E"}, -- E is end
+			}
+
 function place_room(center, vm)
-	local schematic = path .. "/schems/corridor_X.mts"
-	minetest.place_schematic_on_vmanip(vm, center, schematic)
+	local corridor = corridors[math.random(#corridors)].name
+
+	local schematic = path .. "/schems/corridor_" .. corridor .. ".mts"
+	minetest.place_schematic_on_vmanip(vm, center, schematic, "random") -- "random" is for the rotations
 end
 
 local A = 9 -- distance between the centers of the rooms (9 is the best value)
