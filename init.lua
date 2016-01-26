@@ -5,8 +5,6 @@ end
 local function compare(cor1, cor2) -- Compares two tables with positioning information
 	for index, item in pairs(cor1) do
 		if not ((item == cor2[index]) or (cor2[index] == nil and item == false)) then -- "not item" <-> "item == false"
-			print("1st: " .. minetest.serialize(item))
-			print("2nd: " .. minetest.serialize(cor2[index]))
 			return false
 		end
 	end
@@ -216,7 +214,8 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	local t2 = os.clock()
 	local calcdelay = string.format("%.2fs", t2 - t1)
 
-	vm:calc_lighting(nil, nil, false)
+	vm:set_lighting({day=0, night=0})
+	vm:calc_lighting()
 	vm:write_to_map()
 
 	local t3 = os.clock()
