@@ -1,13 +1,12 @@
-local dirs = {"px", "py", "pz", "nx", "ny", "nz"}
-local function compare(cor1, cor2) -- Compares two tables with positioning information
-	if not cor1 and not cor2 then -- If both are false, then they are equal
-		return true
-	elseif not cor1 or not cor2 then -- If only one is false and another is true, they are not equal
-		return false
-	end
+local function table_to_string(table)
+	return minetest.serialize(table)
+end
 
-	for _, dir in pairs(dirs) do
-		if cor1[dir] ~= cor2[dir] then
+local function compare(cor1, cor2) -- Compares two tables with positioning information
+	for index, item in pairs(cor1) do
+		if not ((item == cor2[index]) or (cor2[index] == nil and item == false)) then -- "not item" <-> "item == false"
+			print("1st: " .. minetest.serialize(item))
+			print("2nd: " .. minetest.serialize(cor2[index]))
 			return false
 		end
 	end
@@ -29,18 +28,18 @@ corridors = {
 			{name="L", connect_to = {nx=true, nz=true}, rotation = 90}, --
 			{name="L", connect_to = {nx=true, pz=true}, rotation = 180},
 			{name="L", connect_to = {px=true, pz=true}, rotation = 270},
---[[
+
 			{name="E", connect_to = {px=true}}, -- E is end
 			{name="E", connect_to = {nz=true}, rotation = 90},
 			{name="E", connect_to = {nx=true}, rotation = 180},
 			{name="E", connect_to = {pz=true}, rotation = 270},
---]]
+
 			{name="T", connect_to = {px=true, pz=true, nz=true}},
 			{name="T", connect_to = {px=true, nx=true, nz=true}, rotation = 90},
 			{name="T", connect_to = {nx=true, pz=true, nz=true}, rotation = 180},
 			{name="T", connect_to = {px=true, nx=true, pz=true}, rotation = 270},
 			{name="L", connect_to = {px=true, nz=true}},
-			{name="S"}, -- A corridor filled with stone (doesn't connect to anything)
+			{name="S", connect_to = {}}, -- A corridor filled with stone (doesn't connect to anything)
 			}
 
 placed_corridors = {}
@@ -64,6 +63,8 @@ local function check_neighbours(corridor_pos) -- Returns a list of possible corr
 	if placed_corridors[px][y][z] then
 	if placed_corridors[px][y][z].nx then
 		connect_to.px = true
+	else
+		connect_to.px = false
 	end
 	end
 	end
@@ -73,6 +74,8 @@ local function check_neighbours(corridor_pos) -- Returns a list of possible corr
 	if placed_corridors[x][py][z] then
 	if placed_corridors[x][py][z].ny then
 		connect_to.py = true
+	else
+		connect_to.py = false
 	end
 	end
 	end
@@ -82,6 +85,8 @@ local function check_neighbours(corridor_pos) -- Returns a list of possible corr
 	if placed_corridors[x][y][pz] then
 	if placed_corridors[x][y][pz].nz then
 		connect_to.pz = true
+	else
+		connect_to.pz = false
 	end
 	end
 	end
@@ -91,6 +96,8 @@ local function check_neighbours(corridor_pos) -- Returns a list of possible corr
 	if placed_corridors[nx][y][z] then
 	if placed_corridors[nx][y][z].px then
 		connect_to.nx = true
+	else
+		connect_to.nx = false
 	end
 	end
 	end
@@ -100,6 +107,8 @@ local function check_neighbours(corridor_pos) -- Returns a list of possible corr
 	if placed_corridors[x][ny][z] then
 	if placed_corridors[x][ny][z].py then
 		connect_to.ny = true
+	else
+		connect_to.ny = false
 	end
 	end
 	end
@@ -109,16 +118,16 @@ local function check_neighbours(corridor_pos) -- Returns a list of possible corr
 	if placed_corridors[x][y][nz] then
 	if placed_corridors[x][y][nz].pz then
 		connect_to.nz = true
+	else
+		connect_to.nz = false
 	end
 	end
 	end
 	end
-
-	print(minetest.serialize(connect_to))
 
 	local possible_corridors = {} -- Now seaech for the right corridor
 	for _, corridor in pairs(corridors) do
-		if compare(corridor.connect_to, connect_to) then
+		if compare(connect_to, corridor.connect_to) then
 			table.insert(possible_corridors, corridor)
 		end
 	end
@@ -130,7 +139,15 @@ local function check_neighbours(corridor_pos) -- Returns a list of possible corr
 		corridor = possible_corridors[math.random(#possible_corridors)]
 	end
 
+--	if corridor then
+--		print(minetest.serialize(corridor))
+--	end
+
+--	print(minetest.serialize(connect_to))
+--	print(minetest.serialize(corridor))
+
 	if not corridor then
+		print("SAVE ME FROM MY LONELINESS. I AM AT " .. table_to_string(corridor_pos) .. " AND I HAVE " .. table_to_string(connect_to))
 		corridor = corridors[math.random(#corridors)]
 	end
 
@@ -141,7 +158,8 @@ local function place_room(center, vm)
 	local corridor_pos = {}
 
 	for _,coordinate in pairs(coordinates) do
-		corridor_pos[coordinate] = floor(center[coordinate]/A)
+--		corridor_pos[coordinate] = floor(center[coordinate]/A)
+		corridor_pos[coordinate] = center[coordinate]/A
 	end
 
 	local corridor = check_neighbours(corridor_pos)
