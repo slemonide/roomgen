@@ -1,12 +1,13 @@
-local function compare(table1, table2) -- Compares two tables
-	for index, item in ipairs(table1) do
-		if table2[index] ~= item then
-			return false
-		end
+local dirs = {"px", "py", "pz", "nx", "ny", "nz"}
+local function compare(cor1, cor2) -- Compares two tables with positioning information
+	if not cor1 and not cor2 then -- If both are false, then they are equal
+		return true
+	elseif not cor1 or not cor2 then -- If only one is false and another is true, they are not equal
+		return false
 	end
 
-	for index, item in ipairs(table2) do
-		if table1[index] ~= item then
+	for _, dir in pairs(dirs) do
+		if cor1[dir] ~= cor2[dir] then
 			return false
 		end
 	end
@@ -28,14 +29,18 @@ corridors = {
 			{name="L", connect_to = {nx=true, nz=true}, rotation = 90}, --
 			{name="L", connect_to = {nx=true, pz=true}, rotation = 180},
 			{name="L", connect_to = {px=true, pz=true}, rotation = 270},
+--[[
 			{name="E", connect_to = {px=true}}, -- E is end
 			{name="E", connect_to = {nz=true}, rotation = 90},
 			{name="E", connect_to = {nx=true}, rotation = 180},
 			{name="E", connect_to = {pz=true}, rotation = 270},
+--]]
 			{name="T", connect_to = {px=true, pz=true, nz=true}},
 			{name="T", connect_to = {px=true, nx=true, nz=true}, rotation = 90},
 			{name="T", connect_to = {nx=true, pz=true, nz=true}, rotation = 180},
 			{name="T", connect_to = {px=true, nx=true, pz=true}, rotation = 270},
+			{name="L", connect_to = {px=true, nz=true}},
+			{name="S"}, -- A corridor filled with stone (doesn't connect to anything)
 			}
 
 placed_corridors = {}
@@ -109,16 +114,11 @@ local function check_neighbours(corridor_pos) -- Returns a list of possible corr
 	end
 	end
 
-	if not connect_to then -- If no neighbouring blocks, place whatever you want to
-		local corridor = corridors[math.random(#corridors)]
-		return corridor
-	end
+	print(minetest.serialize(connect_to))
 
 	local possible_corridors = {} -- Now seaech for the right corridor
 	for _, corridor in pairs(corridors) do
---		print(minetest.serialize(corridor))
 		if compare(corridor.connect_to, connect_to) then
---			print("Inserting corridor")
 			table.insert(possible_corridors, corridor)
 		end
 	end
@@ -128,6 +128,10 @@ local function check_neighbours(corridor_pos) -- Returns a list of possible corr
 		corridor = possible_corridors[1]
 	else
 		corridor = possible_corridors[math.random(#possible_corridors)]
+	end
+
+	if not corridor then
+		corridor = corridors[math.random(#corridors)]
 	end
 
 	return corridor
@@ -140,7 +144,6 @@ local function place_room(center, vm)
 		corridor_pos[coordinate] = floor(center[coordinate]/A)
 	end
 
---	local corridor = corridors[math.random(#corridors)]
 	local corridor = check_neighbours(corridor_pos)
 	local name = corridor.name
 	local rotation = corridor.rotation
@@ -151,6 +154,10 @@ local function place_room(center, vm)
 
 	local schematic = path .. "/schems/corridor_" .. name .. ".mts"
 	minetest.place_schematic_on_vmanip(vm, center, schematic, rotation)
+
+	schematic = path .. "/schems/chandelier.mts"
+	local chandelier_pos = {x = center.x + 3, y = center.y + 6, z = center.z + 3}
+	minetest.place_schematic_on_vmanip(vm, chandelier_pos, schematic)
 
 	if not placed_corridors[corridor_pos.x] then
 		placed_corridors[corridor_pos.x] = {}
