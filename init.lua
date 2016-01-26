@@ -1,3 +1,21 @@
+local function compare(table1, table2) -- Compares two tables
+	for index, item in ipairs(table1) do
+		if table2[index] ~= item then
+			return false
+		end
+	end
+
+	for index, item in ipairs(table2) do
+		if table1[index] ~= item then
+			return false
+		end
+	end
+	return true
+end
+
+local floor = math.floor
+local coordinates = {"x", "y", "z"}
+
 local path = minetest.get_modpath("roomgen")
 
 local A = 9 -- distance between the centers of the rooms (9 is the best value)
@@ -22,14 +40,108 @@ corridors = {
 
 placed_corridors = {}
 
-function mind_neighbours(center) -- Checks what blocks are placed near given block
-	connect_to = {}
-	local dist = A + 1
-	nx = {x = center.x - dist, y = center.y, z = center.z}
+local function check_neighbours(corridor_pos) -- Returns a list of possible corridors
+	local x = corridor_pos.x
+	local y = corridor_pos.y
+	local z = corridor_pos.z
+
+	local px = x + 1
+	local py = y + 1
+	local pz = z + 1
+	local nx = x - 1
+	local ny = y - 1
+	local nz = z - 1
+
+	local connect_to = {}
+
+	if placed_corridors[px] then
+	if placed_corridors[px][y] then
+	if placed_corridors[px][y][z] then
+	if placed_corridors[px][y][z].nx then
+		connect_to.px = true
+	end
+	end
+	end
+	end
+	if placed_corridors[x] then
+	if placed_corridors[x][py] then
+	if placed_corridors[x][py][z] then
+	if placed_corridors[x][py][z].ny then
+		connect_to.py = true
+	end
+	end
+	end
+	end
+	if placed_corridors[x] then
+	if placed_corridors[x][y] then
+	if placed_corridors[x][y][pz] then
+	if placed_corridors[x][y][pz].nz then
+		connect_to.pz = true
+	end
+	end
+	end
+	end
+	if placed_corridors[nx] then
+	if placed_corridors[nx][y] then
+	if placed_corridors[nx][y][z] then
+	if placed_corridors[nx][y][z].px then
+		connect_to.nx = true
+	end
+	end
+	end
+	end
+	if placed_corridors[x] then
+	if placed_corridors[x][ny] then
+	if placed_corridors[x][ny][z] then
+	if placed_corridors[x][ny][z].py then
+		connect_to.ny = true
+	end
+	end
+	end
+	end
+	if placed_corridors[x] then
+	if placed_corridors[x][y] then
+	if placed_corridors[x][y][nz] then
+	if placed_corridors[x][y][nz].pz then
+		connect_to.nz = true
+	end
+	end
+	end
+	end
+
+	if not connect_to then -- If no neighbouring blocks, place whatever you want to
+		local corridor = corridors[math.random(#corridors)]
+		return corridor
+	end
+
+	local possible_corridors = {} -- Now seaech for the right corridor
+	for _, corridor in pairs(corridors) do
+--		print(minetest.serialize(corridor))
+		if compare(corridor.connect_to, connect_to) then
+--			print("Inserting corridor")
+			table.insert(possible_corridors, corridor)
+		end
+	end
+
+	local corridor
+	if #possible_corridors == 1 then
+		corridor = possible_corridors[1]
+	else
+		corridor = possible_corridors[math.random(#possible_corridors)]
+	end
+
+	return corridor
 end
 
-function place_room(center, vm)
-	local corridor = corridors[math.random(#corridors)]
+local function place_room(center, vm)
+	local corridor_pos = {}
+
+	for _,coordinate in pairs(coordinates) do
+		corridor_pos[coordinate] = floor(center[coordinate]/A)
+	end
+
+--	local corridor = corridors[math.random(#corridors)]
+	local corridor = check_neighbours(corridor_pos)
 	local name = corridor.name
 	local rotation = corridor.rotation
 
@@ -40,16 +152,18 @@ function place_room(center, vm)
 	local schematic = path .. "/schems/corridor_" .. name .. ".mts"
 	minetest.place_schematic_on_vmanip(vm, center, schematic, rotation)
 
-	table.insert(placed_corridors, corridor)
+	if not placed_corridors[corridor_pos.x] then
+		placed_corridors[corridor_pos.x] = {}
+	end
+
+	if not placed_corridors[corridor_pos.x][corridor_pos.y] then
+		placed_corridors[corridor_pos.x][corridor_pos.y] = {}
+	end
+
+	placed_corridors[corridor_pos.x][corridor_pos.y][corridor_pos.z] = corridor.connect_to
+	check_neighbours(corridor_pos)
 end
 
-minetest.register_on_mapgen_init(function(params) -- Automatically turn on singlenode generator
-	minetest.set_mapgen_params({
-		mgname = "singlenode"
-	})
-end)
-
-rooms = {}
 minetest.register_on_generated(function(minp, maxp, seed)
 	local t1 = os.clock()
 	local geninfo = "[mg] generates..."
@@ -83,4 +197,10 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	local t3 = os.clock()
 	local geninfo = "[mg] done after ca.: "..calcdelay.." + "..string.format("%.2fs", t3 - t2).." = "..string.format("%.2fs", t3 - t1)
 	print(geninfo)
+end)
+
+minetest.register_on_mapgen_init(function(params) -- Automatically turn on singlenode generator
+	minetest.set_mapgen_params({
+		mgname = "singlenode"
+	})
 end)
