@@ -1,6 +1,4 @@
-local function table_to_string(table)
-	return minetest.serialize(table)
-end
+local serialize = minetest.serialize
 
 local function compare(cor1, cor2) -- Compares two tables with positioning information
 	for index, item in pairs(cor1) do
@@ -26,17 +24,14 @@ corridors = {
 			{name="L", connect_to = {nx=true, nz=true}, rotation = 90}, --
 			{name="L", connect_to = {nx=true, pz=true}, rotation = 180},
 			{name="L", connect_to = {px=true, pz=true}, rotation = 270},
-
 			{name="E", connect_to = {px=true}}, -- E is end
 			{name="E", connect_to = {nz=true}, rotation = 90},
 			{name="E", connect_to = {nx=true}, rotation = 180},
 			{name="E", connect_to = {pz=true}, rotation = 270},
-
 			{name="T", connect_to = {px=true, pz=true, nz=true}},
 			{name="T", connect_to = {px=true, nx=true, nz=true}, rotation = 90},
 			{name="T", connect_to = {nx=true, pz=true, nz=true}, rotation = 180},
 			{name="T", connect_to = {px=true, nx=true, pz=true}, rotation = 270},
-			{name="L", connect_to = {px=true, nz=true}},
 			{name="S", connect_to = {}}, -- A corridor filled with stone (doesn't connect to anything)
 			}
 
@@ -130,22 +125,37 @@ local function check_neighbours(corridor_pos) -- Returns a list of possible corr
 		end
 	end
 
+	if #possible_corridors > 1 then -- If we can place something besides the dead end we will place it
+		for position, corridor in pairs(possible_corridors) do
+			local number_of_connections = 0 -- Count how many connections a given room has
+			for _, dir in pairs(corridor.connect_to) do
+				number_of_connections = number_of_connections + 1
+			end
+			if number_of_connections == 1 then
+				table.remove(possible_corridors, position)
+			end
+		end
+	end
+
 	local corridor
 	if #possible_corridors == 1 then
 		corridor = possible_corridors[1]
 	else
+--[[
+		for position, itr_corridor in possible_corridors do
+			if #itr_corridor.name == "S" then
+				corridor = possible_corridors[position]
+				print("1")
+				break
+			end
+		end
+			print("2")
+--]]
 		corridor = possible_corridors[math.random(#possible_corridors)]
 	end
 
---	if corridor then
---		print(minetest.serialize(corridor))
---	end
-
---	print(minetest.serialize(connect_to))
---	print(minetest.serialize(corridor))
-
 	if not corridor then
-		print("SAVE ME FROM MY LONELINESS. I AM AT " .. table_to_string(corridor_pos) .. " AND I HAVE " .. table_to_string(connect_to))
+		print("SAVE ME FROM MY LONELINESS. I AM AT " .. serialize(corridor_pos) .. " AND I HAVE " .. serialize(connect_to))
 		corridor = corridors[math.random(#corridors)]
 	end
 
