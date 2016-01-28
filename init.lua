@@ -141,17 +141,13 @@ local function check_neighbours(corridor_pos) -- Returns a list of possible corr
 	if #possible_corridors == 1 then
 		corridor = possible_corridors[1]
 	else
---[[
-		for position, itr_corridor in possible_corridors do
-			if #itr_corridor.name == "S" then
-				corridor = possible_corridors[position]
-				print("1")
+		corridor = possible_corridors[math.random(#possible_corridors)]
+		for position, itr_corridor in pairs(possible_corridors) do
+			if itr_corridor.name == "S" and math.random(1000) ~= 1 then
+				corridor = itr_corridor
 				break
 			end
 		end
-			print("2")
---]]
-		corridor = possible_corridors[math.random(#possible_corridors)]
 	end
 
 	if not corridor then
@@ -172,6 +168,23 @@ local function place_room(center, vm)
 
 	local corridor = check_neighbours(corridor_pos)
 	local name = corridor.name
+
+	if not placed_corridors[corridor_pos.x] then
+		placed_corridors[corridor_pos.x] = {}
+	end
+
+	if not placed_corridors[corridor_pos.x][corridor_pos.y] then
+		placed_corridors[corridor_pos.x][corridor_pos.y] = {}
+	end
+
+	placed_corridors[corridor_pos.x][corridor_pos.y][corridor_pos.z] = corridor.connect_to
+	check_neighbours(corridor_pos)
+
+
+	if corridor.name == "S" then
+		return -- if it is stone, don't place anything
+	end
+
 	local rotation = corridor.rotation
 
 	if not rotation then
@@ -184,17 +197,6 @@ local function place_room(center, vm)
 	schematic = path .. "/schems/chandelier.mts"
 	local chandelier_pos = {x = center.x + 3, y = center.y + 6, z = center.z + 3}
 	minetest.place_schematic_on_vmanip(vm, chandelier_pos, schematic)
-
-	if not placed_corridors[corridor_pos.x] then
-		placed_corridors[corridor_pos.x] = {}
-	end
-
-	if not placed_corridors[corridor_pos.x][corridor_pos.y] then
-		placed_corridors[corridor_pos.x][corridor_pos.y] = {}
-	end
-
-	placed_corridors[corridor_pos.x][corridor_pos.y][corridor_pos.z] = corridor.connect_to
-	check_neighbours(corridor_pos)
 end
 
 minetest.register_on_generated(function(minp, maxp, seed)
@@ -233,6 +235,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	print(geninfo)
 end)
 
+minetest.register_alias("mapgen_singlenode", "default:stone")
 minetest.register_on_mapgen_init(function(params) -- Automatically turn on singlenode generator
 	minetest.set_mapgen_params({
 		mgname = "singlenode"
