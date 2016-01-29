@@ -143,7 +143,7 @@ local function check_neighbours(corridor_pos) -- Returns a list of possible corr
 	else
 		corridor = possible_corridors[math.random(#possible_corridors)]
 		for position, itr_corridor in pairs(possible_corridors) do
-			if itr_corridor.name == "S" and math.random(1000) ~= 1 then
+			if itr_corridor.name == "S" and math.random(10) ~= 1 then
 				corridor = itr_corridor
 				break
 			end
