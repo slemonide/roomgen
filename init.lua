@@ -158,6 +158,20 @@ local function check_neighbours(corridor_pos) -- Returns a list of possible corr
 	return corridor
 end
 
+minetest.register_node("roomgen:light", {
+    description = "Light",
+    drawtype = "airlike",
+    walkable = false,
+    pointable = false,
+    diggable = false,
+    buildable_to = true,
+    climbable = false,
+    paramtype = "light",
+    light_source = 12,
+    sunlight_propagates = true,
+    groups = {not_in_creative_inventory=1},
+})
+
 local function place_room(center, vm)
 	local corridor_pos = {}
 
@@ -192,7 +206,7 @@ local function place_room(center, vm)
 	end
 
 	local schematic = path .. "/schems/corridor_" .. name .. ".mts"
-	minetest.place_schematic_on_vmanip(vm, center, schematic, rotation)
+	minetest.place_schematic_on_vmanip(vm, center, schematic, rotation, {["air"] = "roomgen:light"})
 
 	schematic = path .. "/schems/chandelier.mts"
 	local chandelier_pos = {x = center.x + 3, y = center.y + 6, z = center.z + 3}
