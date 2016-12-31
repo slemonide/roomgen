@@ -183,9 +183,13 @@ corridors = {
 			
 			
 			{name="treasureroom_1", connect_to = {px=true}, after = place_treasure},
-			{name="treasureroom_1", connect_to = {nz=true}, rotation = 90, after = place_treasure},
+			{name="treasureroom_1", connect_to = {nz=true}, rotation = 90, after = place_treasure,
+			                        replacements = {["xpanes:bar_10"] = "xpanes:bar_5",
+			                                        ["xpanes:bar_5"] = "xpanes:bar_10"}},
 			{name="treasureroom_1", connect_to = {nx=true}, rotation = 180, after = place_treasure},
-			{name="treasureroom_1", connect_to = {pz=true}, rotation = 270, after = place_treasure},
+			{name="treasureroom_1", connect_to = {pz=true}, rotation = 270, after = place_treasure,
+			                        replacements = {["xpanes:bar_10"] = "xpanes:bar_5",
+			                                        ["xpanes:bar_5"] = "xpanes:bar_10"}},
 			}
 
 -- ----------------------------------------------------------------------------
@@ -360,9 +364,17 @@ local function place_room(center, vm)
 	if not rotation then
 		rotation = 0
 	end
+	
+	local replacements = corridor.replacements
+
+    if not replacements then
+        replacements = {}
+    end
+
+    replacements["air"] = "roomgen:light"
 
 	local schematic = path .. "/schems/" .. name .. ".mts"
-	minetest.place_schematic_on_vmanip(vm, center, schematic, rotation, {["air"] = "roomgen:light"})
+	minetest.place_schematic_on_vmanip(vm, center, schematic, rotation, replacements)
 	
 	if corridor.after then
 	    corridor.after(center, rotation)
