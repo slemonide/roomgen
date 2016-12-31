@@ -1,3 +1,6 @@
+-- ----------------------------------------------------------------------------
+-- Helpers:
+
 local serialize = minetest.serialize
 
 local function compare(cor1, cor2) -- Compares two tables with positioning information
@@ -10,30 +13,183 @@ local function compare(cor1, cor2) -- Compares two tables with positioning infor
 end
 
 local floor = math.floor
+
+-- ----------------------------------------------------------------------------
+-- Constants:
+
 local coordinates = {"x", "y", "z"}
 
 local path = minetest.get_modpath("roomgen")
 
 local A = 9 -- distance between the centers of the rooms (9 is the best value)
 
+-- ----------------------------------------------------------------------------
+-- Corridor registration:
+
+-- Places treasure in the treasureroom and fixes metal bars
+local function place_treasure(ctr, rotation)
+    local next_pos
+
+    if rotation == 0 then
+        next_pos = {x = ctr.x + 2,
+                    y = ctr.y + 1,
+                    z = ctr.z + 4}
+    elseif rotation == 90 then
+        next_pos = {x = ctr.x + 5,
+                    y = ctr.y + 1,
+                    z = ctr.z + 8}
+    elseif rotation == 180 then
+        next_pos = {x = ctr.x + 8,
+                    y = ctr.y + 1,
+                    z = ctr.z + 5}
+    elseif rotation == 270 then
+        next_pos = {x = ctr.x + 4,
+                    y = ctr.y + 1,
+                    z = ctr.z + 2}
+    end
+    
+    local meta = minetest.get_meta(next_pos)
+
+    local chest_formspec =
+	    "size[8,9]" ..
+	    default.gui_bg ..
+	    default.gui_bg_img ..
+	    default.gui_slots ..
+	    "list[current_name;main;0,0.3;8,4;]" ..
+	    "list[current_player;main;0,4.85;8,1;]" ..
+	    "list[current_player;main;0,6.08;8,3;8]" ..
+	    "listring[current_name;main]" ..
+	    "listring[current_player;main]" ..
+	    default.get_hotbar_bg(0,4.85)
+    
+    meta:set_string("formspec", chest_formspec)
+	meta:set_string("infotext", "Chest")
+	local inv = meta:get_inventory()
+	inv:set_size("main", 8*4)
+
+	local function fill_chest(inv)
+	    local function add(itm)
+	        inv:add_item("main", itm)
+	        --minetest.debug("adding " .. itm .. " at " .. minetest.serialize(next_pos))
+	    end
+	
+        if math.random(3) == 1 then
+            add("default:dirt" .. " " .. tostring(math.random(99)))
+        end
+        if math.random(3) == 1 then
+            add("default:stone" .. " " .. tostring(math.random(99)))
+        end
+        if math.random(3) == 1 then
+            add("default:apple" .. " " .. tostring(math.random(99)))
+        end
+        if math.random(5) == 1 then -- picks
+            local picks = {"wood",
+                           "stone",
+                           "steel",
+                           "bronze",
+                           "mese",
+                           "diamond"}
+            add("default:pick_" .. picks[math.random(#picks)] .. " " .. "1")
+        end
+        if math.random(5) == 1 then -- shovels
+            local picks = {"wood",
+                           "stone",
+                           "steel",
+                           "bronze",
+                           "mese",
+                           "diamond"}
+            add("default:shovel_" .. picks[math.random(#picks)] .. " " .. "1")
+        end
+        if math.random(5) == 1 then -- axes
+            local picks = {"wood",
+                           "stone",
+                           "steel",
+                           "bronze",
+                           "mese",
+                           "diamond"}
+            add("default:axe_" .. picks[math.random(#picks)] .. " " .. "1")
+        end
+        if math.random(5) == 1 then -- swords
+            local picks = {"wood",
+                           "stone",
+                           "steel",
+                           "bronze",
+                           "mese",
+                           "diamond"}
+            add("default:sword_" .. picks[math.random(#picks)] .. " " .. "1")
+        end
+        if math.random(5) == 1 then -- dyes
+            local picks = {"white", "grey", "black", "red", "yellow", "green", "cyan", "blue", "magenta"}
+            add("dye:" .. picks[math.random(#picks)] .. " " .. tostring(math.random(99)))
+        end
+        if math.random(20) == 1 then
+            add("default:diamond" .. " " .. tostring(math.random(99)))
+        end
+        if math.random(3) == 1 then
+            add("default:coalblock" .. " " .. tostring(math.random(99)))
+        end
+        if math.random(3) == 1 then
+            add("default:wood" .. " " .. tostring(math.random(99)))
+        end
+        if math.random(3) == 1 then
+            add("default:clay" .. " " .. tostring(math.random(99)))
+        end
+        if math.random(3) == 1 then
+            add("farming:wheat" .. " " .. tostring(math.random(99)))
+        end
+        if math.random(3) == 1 then
+            add("farming:flour" .. " " .. tostring(math.random(99)))
+        end
+        if math.random(3) == 1 then
+            add("farming:bread" .. " " .. tostring(math.random(99)))
+        end
+        if math.random(3) == 1 then
+            add("farming:cotton" .. " " .. tostring(math.random(99)))
+        end
+        if math.random(3) == 1 then
+            add("farming:straw" .. " " .. tostring(math.random(99)))
+        end
+        if math.random(20) == 1 then
+            add("default:nyancat" .. " " .. tostring(math.random(3)))
+            add("default:nyancat_rainbow" .. " " .. tostring(math.random(20)))
+        end
+        if math.random(20) == 1 then
+            add("default:gold_lump" .. " " .. tostring(math.random(20)))
+        end
+	end
+	
+	fill_chest(inv)
+	fill_chest(inv)
+	fill_chest(inv)
+end
+
 corridors = {
-			{name="X", connect_to = {px=true, pz=true, nx=true, nz=true}},
-			{name="I", connect_to = {px=true, nx=true}}, -- straight corridor (rotation angle is 0)
-			{name="I", connect_to = {pz=true, nz=true}, rotation = 90},
-			{name="L", connect_to = {px=true, nz=true}},
-			{name="L", connect_to = {nx=true, nz=true}, rotation = 90}, --
-			{name="L", connect_to = {nx=true, pz=true}, rotation = 180},
-			{name="L", connect_to = {px=true, pz=true}, rotation = 270},
-			{name="E", connect_to = {px=true}}, -- E is end
-			{name="E", connect_to = {nz=true}, rotation = 90},
-			{name="E", connect_to = {nx=true}, rotation = 180},
-			{name="E", connect_to = {pz=true}, rotation = 270},
-			{name="T", connect_to = {px=true, pz=true, nz=true}},
-			{name="T", connect_to = {px=true, nx=true, nz=true}, rotation = 90},
-			{name="T", connect_to = {nx=true, pz=true, nz=true}, rotation = 180},
-			{name="T", connect_to = {px=true, nx=true, pz=true}, rotation = 270},
-			{name="S", connect_to = {}}, -- A corridor filled with stone (doesn't connect to anything)
+			{name="corridor_X", connect_to = {px=true, pz=true, nx=true, nz=true}},
+			{name="corridor_I", connect_to = {px=true, nx=true}}, -- straight corridor (rotation angle is 0)
+			{name="corridor_I", connect_to = {pz=true, nz=true}, rotation = 90},
+			{name="corridor_L", connect_to = {px=true, nz=true}},
+			{name="corridor_L", connect_to = {nx=true, nz=true}, rotation = 90}, --
+			{name="corridor_L", connect_to = {nx=true, pz=true}, rotation = 180},
+			{name="corridor_L", connect_to = {px=true, pz=true}, rotation = 270},
+			{name="corridor_E", connect_to = {px=true}}, -- E is end
+			{name="corridor_E", connect_to = {nz=true}, rotation = 90},
+			{name="corridor_E", connect_to = {nx=true}, rotation = 180},
+			{name="corridor_E", connect_to = {pz=true}, rotation = 270},
+			{name="corridor_T", connect_to = {px=true, pz=true, nz=true}},
+			{name="corridor_T", connect_to = {px=true, nx=true, nz=true}, rotation = 90},
+			{name="corridor_T", connect_to = {nx=true, pz=true, nz=true}, rotation = 180},
+			{name="corridor_T", connect_to = {px=true, nx=true, pz=true}, rotation = 270},
+			{name="corridor_S", connect_to = {}}, -- A corridor filled with stone (doesn't connect to anything)
+			
+			
+			{name="treasureroom_1", connect_to = {px=true}, after = place_treasure},
+			{name="treasureroom_1", connect_to = {nz=true}, rotation = 90, after = place_treasure},
+			{name="treasureroom_1", connect_to = {nx=true}, rotation = 180, after = place_treasure},
+			{name="treasureroom_1", connect_to = {pz=true}, rotation = 270, after = place_treasure},
 			}
+
+-- ----------------------------------------------------------------------------
+-- Functions and Variables:
 
 placed_corridors = {}
 
@@ -205,12 +361,18 @@ local function place_room(center, vm)
 		rotation = 0
 	end
 
-	local schematic = path .. "/schems/corridor_" .. name .. ".mts"
+	local schematic = path .. "/schems/" .. name .. ".mts"
 	minetest.place_schematic_on_vmanip(vm, center, schematic, rotation, {["air"] = "roomgen:light"})
+	
+	if corridor.after then
+	    corridor.after(center, rotation)
+	end
 
+--[[
 	schematic = path .. "/schems/chandelier.mts"
 	local chandelier_pos = {x = center.x + 3, y = center.y + 6, z = center.z + 3}
 	minetest.place_schematic_on_vmanip(vm, chandelier_pos, schematic)
+--]]
 end
 
 minetest.register_on_generated(function(minp, maxp, seed)
