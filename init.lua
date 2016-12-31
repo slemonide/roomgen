@@ -163,12 +163,12 @@ local function place_treasure(ctr, rotation)
 	fill_chest(inv)
 end
 
-corridors = {
+corridors = { -- normal
 			{name="corridor_X", connect_to = {px=true, pz=true, nx=true, nz=true}},
 			{name="corridor_I", connect_to = {px=true, nx=true}}, -- straight corridor (rotation angle is 0)
 			{name="corridor_I", connect_to = {pz=true, nz=true}, rotation = 90},
 			{name="corridor_L", connect_to = {px=true, nz=true}},
-			{name="corridor_L", connect_to = {nx=true, nz=true}, rotation = 90}, --
+			{name="corridor_L", connect_to = {nx=true, nz=true}, rotation = 90},
 			{name="corridor_L", connect_to = {nx=true, pz=true}, rotation = 180},
 			{name="corridor_L", connect_to = {px=true, pz=true}, rotation = 270},
 			{name="corridor_E", connect_to = {px=true}}, -- E is end
@@ -181,6 +181,93 @@ corridors = {
 			{name="corridor_T", connect_to = {px=true, nx=true, pz=true}, rotation = 270},
 			{name="corridor_S", connect_to = {}}, -- A corridor filled with stone (doesn't connect to anything)
 			
+			  -- air
+			{name="air", connect_to = {px=true, pz=true, nx=true, nz=true}},
+			{name="air", connect_to = {px=true, pz=true, nx=true, nz=true, py=true}},
+			{name="air", connect_to = {px=true, pz=true, nx=true, nz=true, ny=true}},
+			{name="air", connect_to = {px=true, pz=true, nx=true, nz=true, py=true, ny=true}},
+			{name="air", connect_to = {px=true, nx=true}}, -- straight corridor (rotation angle is 0)
+			{name="air", connect_to = {pz=true, nz=true}, rotation = 90},
+			{name="air", connect_to = {px=true, nx=true, py=true}},
+			{name="air", connect_to = {px=true, nx=true, ny=true}},
+			{name="air", connect_to = {px=true, nx=true, py=true, ny=true}},
+			{name="air", connect_to = {pz=true, nz=true, py=true}, rotation = 90},
+			{name="air", connect_to = {pz=true, nz=true, ny=true}, rotation = 90},
+			{name="air", connect_to = {pz=true, nz=true, py=true, ny=true}, rotation = 90},
+			{name="air", connect_to = {px=true, nz=true}},
+			{name="air", connect_to = {px=true, nz=true, py=true}},
+			{name="air", connect_to = {px=true, nz=true, ny=true}},
+			{name="air", connect_to = {px=true, nz=true, py=true, ny=true}},
+			{name="air", connect_to = {nx=true, nz=true}, rotation = 90},
+			{name="air", connect_to = {nx=true, nz=true, py=true}, rotation = 90},
+			{name="air", connect_to = {nx=true, nz=true, ny=true}, rotation = 90},
+			{name="air", connect_to = {nx=true, nz=true, py=true, ny=true}, rotation = 90},
+			{name="air", connect_to = {nx=true, pz=true}, rotation = 180},
+			{name="air", connect_to = {nx=true, pz=true, py=true}, rotation = 180},
+			{name="air", connect_to = {nx=true, pz=true, ny=true}, rotation = 180},
+			{name="air", connect_to = {nx=true, pz=true, py=true, ny=true}, rotation = 180},
+			{name="air", connect_to = {px=true, pz=true}, rotation = 270},
+			{name="air", connect_to = {px=true, pz=true, py=true}, rotation = 270},
+			{name="air", connect_to = {px=true, pz=true, ny=true}, rotation = 270},
+			{name="air", connect_to = {px=true, pz=true, py=true, ny=true}, rotation = 270},
+			{name="air", connect_to = {px=true}}, -- E is end
+			{name="air", connect_to = {px=true, py=true}},
+			{name="air", connect_to = {px=true, ny=true}},
+			{name="air", connect_to = {px=true, py=true, ny=true}},
+			{name="air", connect_to = {nz=true}, rotation = 90},
+			{name="air", connect_to = {nz=true, py=true}, rotation = 90},
+			{name="air", connect_to = {nz=true, ny=true}, rotation = 90},
+			{name="air", connect_to = {nz=true, py=true, ny=true}, rotation = 90},
+			{name="air", connect_to = {nx=true}, rotation = 180},
+			{name="air", connect_to = {nx=true, py=true}, rotation = 180},
+			{name="air", connect_to = {nx=true, ny=true}, rotation = 180},
+			{name="air", connect_to = {nx=true, py=true, ny=true}, rotation = 180},
+			{name="air", connect_to = {pz=true}, rotation = 270},
+			{name="air", connect_to = {pz=true, py=true}, rotation = 270},
+			{name="air", connect_to = {pz=true, ny=true}, rotation = 270},
+			{name="air", connect_to = {pz=true, py=true, ny=true}, rotation = 270},
+			{name="air", connect_to = {px=true, pz=true, nz=true}},
+			{name="air", connect_to = {px=true, pz=true, nz=true, py=true}},
+			{name="air", connect_to = {px=true, pz=true, nz=true, ny=true}},
+			{name="air", connect_to = {px=true, pz=true, nz=true, py=true, ny=true}},
+			{name="air", connect_to = {px=true, nx=true, nz=true}, rotation = 90},
+			{name="air", connect_to = {px=true, nx=true, nz=true, py=true}, rotation = 90},
+			{name="air", connect_to = {px=true, nx=true, nz=true, ny=true}, rotation = 90},
+			{name="air", connect_to = {px=true, nx=true, nz=true, py=true, ny=true}, rotation = 90},
+			{name="air", connect_to = {nx=true, pz=true, nz=true}, rotation = 180},
+			{name="air", connect_to = {nx=true, pz=true, nz=true, py=true}, rotation = 180},
+			{name="air", connect_to = {nx=true, pz=true, nz=true, ny=true}, rotation = 180},
+			{name="air", connect_to = {nx=true, pz=true, nz=true, py=true, ny=true}, rotation = 180},
+			{name="air", connect_to = {px=true, nx=true, pz=true}, rotation = 270},
+			{name="air", connect_to = {px=true, nx=true, pz=true, py=true}, rotation = 270},
+			{name="air", connect_to = {px=true, nx=true, pz=true, ny=true}, rotation = 270},
+			{name="air", connect_to = {px=true, nx=true, pz=true, py=true, ny=true}, rotation = 270},
+			{name="air", connect_to = {py=true}},
+			{name="air", connect_to = {ny=true}},
+			{name="air", connect_to = {py=true, ny=true}},
+			{name="air", connect_to = {}}, -- A corridor filled with stone (doesn't connect to anything)
+			
+			  -- no columns
+			{name="corridor_XF", connect_to = {px=true, pz=true, nx=true, nz=true}},
+			{name="corridor_TF", connect_to = {px=true, pz=true, nz=true}},
+			{name="corridor_TF", connect_to = {px=true, nx=true, nz=true}, rotation = 90},
+			{name="corridor_TF", connect_to = {nx=true, pz=true, nz=true}, rotation = 180},
+			{name="corridor_TF", connect_to = {px=true, nx=true, pz=true}, rotation = 270},
+			{name="corridor_LF", connect_to = {nx=true, nz=true}, rotation = 90}, --
+			{name="corridor_LF", connect_to = {nx=true, pz=true}, rotation = 180},
+			{name="corridor_LF", connect_to = {px=true, pz=true}, rotation = 270},
+			
+			--[[
+			{name="corridor_E_UP", connect_to = {px=true, py=true}}, -- E with upwards staircase
+			{name="corridor_E_UP", connect_to = {nz=true, py=true}, rotation = 90},
+			{name="corridor_E_UP", connect_to = {nx=true, py=true}, rotation = 180},
+			{name="corridor_E_UP", connect_to = {pz=true, py=true}, rotation = 270},
+			
+			{name="corridor_E_DOWN", connect_to = {px=true, ny=true}}, -- E with downwards staircase
+			{name="corridor_E_DOWN", connect_to = {nz=true, ny=true}, rotation = 90},
+			{name="corridor_E_DOWN", connect_to = {nx=true, ny=true}, rotation = 180},
+			{name="corridor_E_DOWN", connect_to = {pz=true, ny=true}, rotation = 270},
+			--]]
 			
 			{name="treasureroom_1", connect_to = {px=true}, after = place_treasure},
 			{name="treasureroom_1", connect_to = {nz=true}, rotation = 90, after = place_treasure,
@@ -301,6 +388,10 @@ local function check_neighbours(corridor_pos) -- Returns a list of possible corr
 	if #possible_corridors == 1 then
 		corridor = possible_corridors[1]
 	else
+	if #possible_corridors == 0 then
+	    print("ERROR: NOT ENOUGH CORRIDORS")
+	    return {name="corridor_S", connect_to = {}}
+	end
 		corridor = possible_corridors[math.random(#possible_corridors)]
 		for position, itr_corridor in pairs(possible_corridors) do
 			if itr_corridor.name == "S" and math.random(10) ~= 1 then
@@ -423,7 +514,7 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	print(geninfo)
 end)
 
-minetest.register_alias("mapgen_singlenode", "default:stone")
+minetest.register_alias("mapgen_singlenode", "air")
 minetest.register_on_mapgen_init(function(params) -- Automatically turn on singlenode generator
 	minetest.set_mapgen_params({
 		mgname = "singlenode"
