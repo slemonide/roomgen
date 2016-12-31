@@ -27,7 +27,7 @@ local A = 9 -- distance between the centers of the rooms (9 is the best value)
 -- Corridor registration:
 
 -- Places treasure in the treasureroom and fixes metal bars
-local function place_treasure(ctr, rotation)
+local function place_treasure(ctr, rotation, vm)
     local next_pos
 
     if rotation == 0 then
@@ -82,6 +82,7 @@ local function place_treasure(ctr, rotation)
         if math.random(3) == 1 then
             add("default:apple" .. " " .. tostring(math.random(99)))
         end
+        --[[
         if math.random(5) == 1 then -- picks
             local picks = {"wood",
                            "stone",
@@ -118,10 +119,13 @@ local function place_treasure(ctr, rotation)
                            "diamond"}
             add("default:sword_" .. picks[math.random(#picks)] .. " " .. "1")
         end
+        --]]
+        --[[
         if math.random(5) == 1 then -- dyes
             local picks = {"white", "grey", "black", "red", "yellow", "green", "cyan", "blue", "magenta"}
             add("dye:" .. picks[math.random(#picks)] .. " " .. tostring(math.random(99)))
         end
+        --]]
         if math.random(20) == 1 then
             add("default:diamond" .. " " .. tostring(math.random(99)))
         end
@@ -143,9 +147,9 @@ local function place_treasure(ctr, rotation)
         if math.random(3) == 1 then
             add("farming:bread" .. " " .. tostring(math.random(99)))
         end
-        if math.random(3) == 1 then
-            add("farming:cotton" .. " " .. tostring(math.random(99)))
-        end
+        --if math.random(3) == 1 then
+        --    add("farming:cotton" .. " " .. tostring(math.random(99)))
+        --end
         if math.random(3) == 1 then
             add("farming:straw" .. " " .. tostring(math.random(99)))
         end
@@ -163,121 +167,100 @@ local function place_treasure(ctr, rotation)
 	fill_chest(inv)
 end
 
-corridors = { -- normal
-			{name="corridor_X", connect_to = {px=true, pz=true, nx=true, nz=true}},
-			{name="corridor_I", connect_to = {px=true, nx=true}}, -- straight corridor (rotation angle is 0)
-			{name="corridor_I", connect_to = {pz=true, nz=true}, rotation = 90},
-			{name="corridor_L", connect_to = {px=true, nz=true}},
-			{name="corridor_L", connect_to = {nx=true, nz=true}, rotation = 90},
-			{name="corridor_L", connect_to = {nx=true, pz=true}, rotation = 180},
-			{name="corridor_L", connect_to = {px=true, pz=true}, rotation = 270},
-			{name="corridor_E", connect_to = {px=true}}, -- E is end
-			{name="corridor_E", connect_to = {nz=true}, rotation = 90},
-			{name="corridor_E", connect_to = {nx=true}, rotation = 180},
-			{name="corridor_E", connect_to = {pz=true}, rotation = 270},
-			{name="corridor_T", connect_to = {px=true, pz=true, nz=true}},
-			{name="corridor_T", connect_to = {px=true, nx=true, nz=true}, rotation = 90},
-			{name="corridor_T", connect_to = {nx=true, pz=true, nz=true}, rotation = 180},
-			{name="corridor_T", connect_to = {px=true, nx=true, pz=true}, rotation = 270},
-			{name="corridor_S", connect_to = {}}, -- A corridor filled with stone (doesn't connect to anything)
-			
-			  -- air
-			{name="air", connect_to = {px=true, pz=true, nx=true, nz=true}},
-			{name="air", connect_to = {px=true, pz=true, nx=true, nz=true, py=true}},
-			{name="air", connect_to = {px=true, pz=true, nx=true, nz=true, ny=true}},
-			{name="air", connect_to = {px=true, pz=true, nx=true, nz=true, py=true, ny=true}},
-			{name="air", connect_to = {px=true, nx=true}}, -- straight corridor (rotation angle is 0)
-			{name="air", connect_to = {pz=true, nz=true}, rotation = 90},
-			{name="air", connect_to = {px=true, nx=true, py=true}},
-			{name="air", connect_to = {px=true, nx=true, ny=true}},
-			{name="air", connect_to = {px=true, nx=true, py=true, ny=true}},
-			{name="air", connect_to = {pz=true, nz=true, py=true}, rotation = 90},
-			{name="air", connect_to = {pz=true, nz=true, ny=true}, rotation = 90},
-			{name="air", connect_to = {pz=true, nz=true, py=true, ny=true}, rotation = 90},
-			{name="air", connect_to = {px=true, nz=true}},
-			{name="air", connect_to = {px=true, nz=true, py=true}},
-			{name="air", connect_to = {px=true, nz=true, ny=true}},
-			{name="air", connect_to = {px=true, nz=true, py=true, ny=true}},
-			{name="air", connect_to = {nx=true, nz=true}, rotation = 90},
-			{name="air", connect_to = {nx=true, nz=true, py=true}, rotation = 90},
-			{name="air", connect_to = {nx=true, nz=true, ny=true}, rotation = 90},
-			{name="air", connect_to = {nx=true, nz=true, py=true, ny=true}, rotation = 90},
-			{name="air", connect_to = {nx=true, pz=true}, rotation = 180},
-			{name="air", connect_to = {nx=true, pz=true, py=true}, rotation = 180},
-			{name="air", connect_to = {nx=true, pz=true, ny=true}, rotation = 180},
-			{name="air", connect_to = {nx=true, pz=true, py=true, ny=true}, rotation = 180},
-			{name="air", connect_to = {px=true, pz=true}, rotation = 270},
-			{name="air", connect_to = {px=true, pz=true, py=true}, rotation = 270},
-			{name="air", connect_to = {px=true, pz=true, ny=true}, rotation = 270},
-			{name="air", connect_to = {px=true, pz=true, py=true, ny=true}, rotation = 270},
-			{name="air", connect_to = {px=true}}, -- E is end
-			{name="air", connect_to = {px=true, py=true}},
-			{name="air", connect_to = {px=true, ny=true}},
-			{name="air", connect_to = {px=true, py=true, ny=true}},
-			{name="air", connect_to = {nz=true}, rotation = 90},
-			{name="air", connect_to = {nz=true, py=true}, rotation = 90},
-			{name="air", connect_to = {nz=true, ny=true}, rotation = 90},
-			{name="air", connect_to = {nz=true, py=true, ny=true}, rotation = 90},
-			{name="air", connect_to = {nx=true}, rotation = 180},
-			{name="air", connect_to = {nx=true, py=true}, rotation = 180},
-			{name="air", connect_to = {nx=true, ny=true}, rotation = 180},
-			{name="air", connect_to = {nx=true, py=true, ny=true}, rotation = 180},
-			{name="air", connect_to = {pz=true}, rotation = 270},
-			{name="air", connect_to = {pz=true, py=true}, rotation = 270},
-			{name="air", connect_to = {pz=true, ny=true}, rotation = 270},
-			{name="air", connect_to = {pz=true, py=true, ny=true}, rotation = 270},
-			{name="air", connect_to = {px=true, pz=true, nz=true}},
-			{name="air", connect_to = {px=true, pz=true, nz=true, py=true}},
-			{name="air", connect_to = {px=true, pz=true, nz=true, ny=true}},
-			{name="air", connect_to = {px=true, pz=true, nz=true, py=true, ny=true}},
-			{name="air", connect_to = {px=true, nx=true, nz=true}, rotation = 90},
-			{name="air", connect_to = {px=true, nx=true, nz=true, py=true}, rotation = 90},
-			{name="air", connect_to = {px=true, nx=true, nz=true, ny=true}, rotation = 90},
-			{name="air", connect_to = {px=true, nx=true, nz=true, py=true, ny=true}, rotation = 90},
-			{name="air", connect_to = {nx=true, pz=true, nz=true}, rotation = 180},
-			{name="air", connect_to = {nx=true, pz=true, nz=true, py=true}, rotation = 180},
-			{name="air", connect_to = {nx=true, pz=true, nz=true, ny=true}, rotation = 180},
-			{name="air", connect_to = {nx=true, pz=true, nz=true, py=true, ny=true}, rotation = 180},
-			{name="air", connect_to = {px=true, nx=true, pz=true}, rotation = 270},
-			{name="air", connect_to = {px=true, nx=true, pz=true, py=true}, rotation = 270},
-			{name="air", connect_to = {px=true, nx=true, pz=true, ny=true}, rotation = 270},
-			{name="air", connect_to = {px=true, nx=true, pz=true, py=true, ny=true}, rotation = 270},
-			{name="air", connect_to = {py=true}},
-			{name="air", connect_to = {ny=true}},
-			{name="air", connect_to = {py=true, ny=true}},
-			{name="air", connect_to = {}}, -- A corridor filled with stone (doesn't connect to anything)
-			
-			  -- no columns
-			{name="corridor_XF", connect_to = {px=true, pz=true, nx=true, nz=true}},
-			{name="corridor_TF", connect_to = {px=true, pz=true, nz=true}},
-			{name="corridor_TF", connect_to = {px=true, nx=true, nz=true}, rotation = 90},
-			{name="corridor_TF", connect_to = {nx=true, pz=true, nz=true}, rotation = 180},
-			{name="corridor_TF", connect_to = {px=true, nx=true, pz=true}, rotation = 270},
-			{name="corridor_LF", connect_to = {nx=true, nz=true}, rotation = 90}, --
-			{name="corridor_LF", connect_to = {nx=true, pz=true}, rotation = 180},
-			{name="corridor_LF", connect_to = {px=true, pz=true}, rotation = 270},
-			
-			--[[
-			{name="corridor_E_UP", connect_to = {px=true, py=true}}, -- E with upwards staircase
-			{name="corridor_E_UP", connect_to = {nz=true, py=true}, rotation = 90},
-			{name="corridor_E_UP", connect_to = {nx=true, py=true}, rotation = 180},
-			{name="corridor_E_UP", connect_to = {pz=true, py=true}, rotation = 270},
-			
-			{name="corridor_E_DOWN", connect_to = {px=true, ny=true}}, -- E with downwards staircase
-			{name="corridor_E_DOWN", connect_to = {nz=true, ny=true}, rotation = 90},
-			{name="corridor_E_DOWN", connect_to = {nx=true, ny=true}, rotation = 180},
-			{name="corridor_E_DOWN", connect_to = {pz=true, ny=true}, rotation = 270},
-			--]]
-			
-			{name="treasureroom_1", connect_to = {px=true}, after = place_treasure},
-			{name="treasureroom_1", connect_to = {nz=true}, rotation = 90, after = place_treasure,
-			                        replacements = {["xpanes:bar_10"] = "xpanes:bar_5",
-			                                        ["xpanes:bar_5"] = "xpanes:bar_10"}},
-			{name="treasureroom_1", connect_to = {nx=true}, rotation = 180, after = place_treasure},
-			{name="treasureroom_1", connect_to = {pz=true}, rotation = 270, after = place_treasure,
-			                        replacements = {["xpanes:bar_10"] = "xpanes:bar_5",
-			                                        ["xpanes:bar_5"] = "xpanes:bar_10"}},
-			}
+local function place_staircase(ctr, rotation, vm)
+	local schematic = path .. "/schems/staircase.mts"
+	local chandelier_pos = {x = ctr.x + 3, y = ctr.y + 1, z = ctr.z + 3}
+	minetest.place_schematic_on_vmanip(vm, chandelier_pos, schematic)
+end
+
+local function place_staircase_passage(ctr, rotation, vm)
+	local schematic = path .. "/schems/staircase_passage.mts"
+	local chandelier_pos = {x = ctr.x + 3, y = ctr.y, z = ctr.z + 3}
+	minetest.place_schematic_on_vmanip(vm, chandelier_pos, schematic)
+end
+
+local function place_UD_staircase(ctr, rotation, vm)
+    place_staircase(ctr, rotation, vm)
+    place_staircase_passage(ctr, rotation, vm)
+end
+
+corridors = {}
+
+-- String ConnectTo Boolean Boolean (Pos Rotation VoxelManip -> (Void)) -> (Void)
+-- Add given corridor to the corridors list
+function register_corridor(name, connect_to, rotate, staircase, after)
+    local function rotate_connect(connect_to)
+        local rsf = {} -- rsf: ConnectTo; result so far accumulator
+        local connection, state
+        for connection, state in pairs(connect_to) do
+           if connection == "px" and state then
+               rsf.nz = true
+           end
+           if connection == "nz" and state then
+               rsf.nx = true
+           end
+           if connection == "nx" and state then
+               rsf.pz = true
+           end
+           if connection == "pz" and state then
+               rsf.px = true
+           end
+        end
+        
+        return rsf
+    end
+
+    local rsf = {} -- rsf: Corridor; result so far accumulator
+    table.insert(rsf, {name=name, connect_to = connect_to})
+    if rotate then
+        local A = rotate_connect(connect_to)
+        local B = rotate_connect(A)
+        local C = rotate_connect(B)
+		table.insert(rsf, {name=name, connect_to = A, rotation =  90})
+		table.insert(rsf, {name=name, connect_to = B, rotation = 180})
+		table.insert(rsf, {name=name, connect_to = C, rotation = 270})
+    end
+    
+    if after then
+        for n,i in ipairs(rsf) do
+            i.after = after
+        end
+    end
+    
+    for _,i in ipairs(rsf) do
+        table.insert(corridors, i)
+    end
+end
+
+register_corridor("corridor_X", {px=true, pz=true, nx=true, nz=true}, true, true)
+register_corridor("corridor_I", {px=true, nx=true}, true, true)
+register_corridor("corridor_L", {px=true, nz=true}, true, true)
+register_corridor("corridor_E", {px=true}, true, true)
+register_corridor("corridor_T", {px=true, pz=true, nz=true}, true, true)
+register_corridor("corridor_S", {}, false, false)
+
+register_corridor("corridor_X", {px=true, pz=true, nx=true, nz=true, py=true}, true, true, place_staircase)
+register_corridor("corridor_I", {px=true, nx=true, py=true}, true, true, place_staircase)
+register_corridor("corridor_L", {px=true, nz=true, py=true}, true, true, place_staircase)
+register_corridor("corridor_E", {px=true, py=true}, true, true, place_staircase)
+register_corridor("corridor_T", {px=true, pz=true, nz=true, py=true}, true, true, place_staircase)
+register_corridor("corridor_UD", {py=true}, false, false, place_staircase)
+
+register_corridor("corridor_X", {px=true, pz=true, nx=true, nz=true, ny=true}, true, true, place_staircase_passage)
+register_corridor("corridor_I", {px=true, nx=true, ny=true}, true, true, place_staircase_passage)
+register_corridor("corridor_L", {px=true, nz=true, ny=true}, true, true, place_staircase_passage)
+register_corridor("corridor_E", {px=true, ny=true}, true, true, place_staircase_passage)
+register_corridor("corridor_T", {px=true, pz=true, nz=true, ny=true}, true, true, place_staircase_passage)
+register_corridor("corridor_UD", {ny=true}, false, false, place_staircase_passage)
+
+register_corridor("corridor_X", {px=true, pz=true, nx=true, nz=true, py=true, ny=true}, true, true, place_UD_staircase)
+register_corridor("corridor_I", {px=true, nx=true, py=true, ny=true}, true, true, place_UD_staircase)
+register_corridor("corridor_L", {px=true, nz=true, py=true, ny=true}, true, true, place_UD_staircase)
+register_corridor("corridor_E", {px=true, py=true, ny=true}, true, true, place_UD_staircase)
+register_corridor("corridor_T", {px=true, pz=true, nz=true, py=true, ny=true}, true, true, place_UD_staircase)
+register_corridor("corridor_UD", {py=true, ny=true}, false, false, place_UD_staircase)
+
+register_corridor("treasureroom_1", {px=true}, false, false, place_treasure)
 
 -- ----------------------------------------------------------------------------
 -- Functions and Variables:
@@ -468,7 +451,7 @@ local function place_room(center, vm)
 	minetest.place_schematic_on_vmanip(vm, center, schematic, rotation, replacements)
 	
 	if corridor.after then
-	    corridor.after(center, rotation)
+	    corridor.after(center, rotation, vm)
 	end
 
 --[[
