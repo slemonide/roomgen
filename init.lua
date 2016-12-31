@@ -166,7 +166,7 @@ local function place_treasure(ctr, rotation, vm)
 	fill_chest(inv)
 	fill_chest(inv)
 end
-
+--[[
 local function place_staircase(ctr, rotation, vm)
 	local schematic = path .. "/schems/staircase.mts"
 	local chandelier_pos = {x = ctr.x + 3, y = ctr.y + 1, z = ctr.z + 3}
@@ -182,6 +182,25 @@ end
 local function place_UD_staircase(ctr, rotation, vm)
     place_staircase(ctr, rotation, vm)
     place_staircase_passage(ctr, rotation, vm)
+end
+--]]
+
+local function place_ladder_UP(ctr, rotation, vm)
+	local schematic = path .. "/schems/ladder_UP.mts"
+	local chandelier_pos = {x = ctr.x + 3, y = ctr.y + 1, z = ctr.z + 3}
+	minetest.place_schematic_on_vmanip(vm, chandelier_pos, schematic)
+end
+
+local function place_ladder_DOWN(ctr, rotation, vm)
+	local schematic = path .. "/schems/ladder_DOWN.mts"
+	local chandelier_pos = {x = ctr.x + 3, y = ctr.y, z = ctr.z + 3}
+	minetest.place_schematic_on_vmanip(vm, chandelier_pos, schematic)
+end
+
+local function place_ladder_UP_DOWN(ctr, rotation, vm)
+	local schematic = path .. "/schems/ladder_UP_DOWN.mts"
+	local chandelier_pos = {x = ctr.x + 3, y = ctr.y, z = ctr.z + 3}
+	minetest.place_schematic_on_vmanip(vm, chandelier_pos, schematic)
 end
 
 corridors = {}
@@ -239,26 +258,26 @@ register_corridor("corridor_E", {px=true}, true, true)
 register_corridor("corridor_T", {px=true, pz=true, nz=true}, true, true)
 register_corridor("corridor_S", {}, false, false)
 
-register_corridor("corridor_X", {px=true, pz=true, nx=true, nz=true, py=true}, true, true, place_staircase)
-register_corridor("corridor_I", {px=true, nx=true, py=true}, true, true, place_staircase)
-register_corridor("corridor_L", {px=true, nz=true, py=true}, true, true, place_staircase)
-register_corridor("corridor_E", {px=true, py=true}, true, true, place_staircase)
-register_corridor("corridor_T", {px=true, pz=true, nz=true, py=true}, true, true, place_staircase)
-register_corridor("corridor_UD", {py=true}, false, false, place_staircase)
+register_corridor("corridor_X", {px=true, pz=true, nx=true, nz=true, py=true}, true, true, place_ladder_UP)
+register_corridor("corridor_I", {px=true, nx=true, py=true}, true, true, place_ladder_UP)
+register_corridor("corridor_L", {px=true, nz=true, py=true}, true, true, place_ladder_UP)
+register_corridor("corridor_E", {px=true, py=true}, true, true, place_ladder_UP)
+register_corridor("corridor_T", {px=true, pz=true, nz=true, py=true}, true, true, place_ladder_UP)
+register_corridor("corridor_UD", {py=true}, false, false, place_ladder_UP)
 
-register_corridor("corridor_X", {px=true, pz=true, nx=true, nz=true, ny=true}, true, true, place_staircase_passage)
-register_corridor("corridor_I", {px=true, nx=true, ny=true}, true, true, place_staircase_passage)
-register_corridor("corridor_L", {px=true, nz=true, ny=true}, true, true, place_staircase_passage)
-register_corridor("corridor_E", {px=true, ny=true}, true, true, place_staircase_passage)
-register_corridor("corridor_T", {px=true, pz=true, nz=true, ny=true}, true, true, place_staircase_passage)
-register_corridor("corridor_UD", {ny=true}, false, false, place_staircase_passage)
+register_corridor("corridor_X", {px=true, pz=true, nx=true, nz=true, ny=true}, true, true, place_ladder_DOWN)
+register_corridor("corridor_I", {px=true, nx=true, ny=true}, true, true, place_ladder_DOWN)
+register_corridor("corridor_L", {px=true, nz=true, ny=true}, true, true, place_ladder_DOWN)
+register_corridor("corridor_E", {px=true, ny=true}, true, true, place_ladder_DOWN)
+register_corridor("corridor_T", {px=true, pz=true, nz=true, ny=true}, true, true, place_ladder_DOWN)
+register_corridor("corridor_UD", {ny=true}, false, false, place_ladder_DOWN)
 
-register_corridor("corridor_X", {px=true, pz=true, nx=true, nz=true, py=true, ny=true}, true, true, place_UD_staircase)
-register_corridor("corridor_I", {px=true, nx=true, py=true, ny=true}, true, true, place_UD_staircase)
-register_corridor("corridor_L", {px=true, nz=true, py=true, ny=true}, true, true, place_UD_staircase)
-register_corridor("corridor_E", {px=true, py=true, ny=true}, true, true, place_UD_staircase)
-register_corridor("corridor_T", {px=true, pz=true, nz=true, py=true, ny=true}, true, true, place_UD_staircase)
-register_corridor("corridor_UD", {py=true, ny=true}, false, false, place_UD_staircase)
+register_corridor("corridor_X", {px=true, pz=true, nx=true, nz=true, py=true, ny=true}, true, true, place_ladder_UP_DOWN)
+register_corridor("corridor_I", {px=true, nx=true, py=true, ny=true}, true, true, place_ladder_UP_DOWN)
+register_corridor("corridor_L", {px=true, nz=true, py=true, ny=true}, true, true, place_ladder_UP_DOWN)
+register_corridor("corridor_E", {px=true, py=true, ny=true}, true, true, place_ladder_UP_DOWN)
+register_corridor("corridor_T", {px=true, pz=true, nz=true, py=true, ny=true}, true, true, place_ladder_UP_DOWN)
+register_corridor("corridor_UD", {py=true, ny=true}, false, false, place_ladder_UP_DOWN)
 
 register_corridor("treasureroom_1", {px=true}, false, false, place_treasure)
 
@@ -355,7 +374,8 @@ local function check_neighbours(corridor_pos) -- Returns a list of possible corr
 		end
 	end
 
-	if #possible_corridors > 1 then -- If we can place something besides the dead end we will place it
+	if #possible_corridors > 1 then
+	    -- If we can place something besides the dead end we will place it
 		for position, corridor in pairs(possible_corridors) do
 			local number_of_connections = 0 -- Count how many connections a given room has
 			for _, dir in pairs(corridor.connect_to) do
@@ -365,6 +385,15 @@ local function check_neighbours(corridor_pos) -- Returns a list of possible corr
 				table.remove(possible_corridors, position)
 			end
 		end
+	end
+	
+		-- If it is possible not to place a ladder in the highly connected room, don't place it
+	for position, corridor in pairs(possible_corridors) do
+--		if #possible_corridors > 1 then
+		    if corridor.connect_to.py or corridor.connect_to.ny then
+		        table.remove(possible_corridors, position)
+		    end
+--		end
 	end
 
 	local corridor
@@ -410,7 +439,6 @@ local function place_room(center, vm)
 	local corridor_pos = {}
 
 	for _,coordinate in pairs(coordinates) do
---		corridor_pos[coordinate] = floor(center[coordinate]/A)
 		corridor_pos[coordinate] = center[coordinate]/A
 	end
 
