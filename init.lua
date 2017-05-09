@@ -12,8 +12,6 @@ local function compare(cor1, cor2) -- Compares two tables with positioning infor
 	return true
 end
 
-local floor = math.floor
-
 -- ----------------------------------------------------------------------------
 -- Constants:
 
@@ -258,26 +256,26 @@ register_corridor("corridor_E", {px=true}, true, true)
 register_corridor("corridor_T", {px=true, pz=true, nz=true}, true, true)
 register_corridor("corridor_S", {}, false, false)
 
-register_corridor("corridor_X", {px=true, pz=true, nx=true, nz=true, py=true}, true, true, place_ladder_UP)
-register_corridor("corridor_I", {px=true, nx=true, py=true}, true, true, place_ladder_UP)
-register_corridor("corridor_L", {px=true, nz=true, py=true}, true, true, place_ladder_UP)
-register_corridor("corridor_E", {px=true, py=true}, true, true, place_ladder_UP)
-register_corridor("corridor_T", {px=true, pz=true, nz=true, py=true}, true, true, place_ladder_UP)
-register_corridor("corridor_UD", {py=true}, false, false, place_ladder_UP)
+--register_corridor("corridor_X", {px=true, pz=true, nx=true, nz=true, py=true}, true, true, place_ladder_UP)
+--register_corridor("corridor_I", {px=true, nx=true, py=true}, true, true, place_ladder_UP)
+--register_corridor("corridor_L", {px=true, nz=true, py=true}, true, true, place_ladder_UP)
+--register_corridor("corridor_E", {px=true, py=true}, true, true, place_ladder_UP)
+--register_corridor("corridor_T", {px=true, pz=true, nz=true, py=true}, true, true, place_ladder_UP)
+--register_corridor("corridor_UD", {py=true}, false, false, place_ladder_UP)
 
-register_corridor("corridor_X", {px=true, pz=true, nx=true, nz=true, ny=true}, true, true, place_ladder_DOWN)
-register_corridor("corridor_I", {px=true, nx=true, ny=true}, true, true, place_ladder_DOWN)
-register_corridor("corridor_L", {px=true, nz=true, ny=true}, true, true, place_ladder_DOWN)
-register_corridor("corridor_E", {px=true, ny=true}, true, true, place_ladder_DOWN)
-register_corridor("corridor_T", {px=true, pz=true, nz=true, ny=true}, true, true, place_ladder_DOWN)
-register_corridor("corridor_UD", {ny=true}, false, false, place_ladder_DOWN)
+--register_corridor("corridor_X", {px=true, pz=true, nx=true, nz=true, ny=true}, true, true, place_ladder_DOWN)
+--register_corridor("corridor_I", {px=true, nx=true, ny=true}, true, true, place_ladder_DOWN)
+--register_corridor("corridor_L", {px=true, nz=true, ny=true}, true, true, place_ladder_DOWN)
+--register_corridor("corridor_E", {px=true, ny=true}, true, true, place_ladder_DOWN)
+--register_corridor("corridor_T", {px=true, pz=true, nz=true, ny=true}, true, true, place_ladder_DOWN)
+--register_corridor("corridor_UD", {ny=true}, false, false, place_ladder_DOWN)
 
-register_corridor("corridor_X", {px=true, pz=true, nx=true, nz=true, py=true, ny=true}, true, true, place_ladder_UP_DOWN)
-register_corridor("corridor_I", {px=true, nx=true, py=true, ny=true}, true, true, place_ladder_UP_DOWN)
-register_corridor("corridor_L", {px=true, nz=true, py=true, ny=true}, true, true, place_ladder_UP_DOWN)
-register_corridor("corridor_E", {px=true, py=true, ny=true}, true, true, place_ladder_UP_DOWN)
-register_corridor("corridor_T", {px=true, pz=true, nz=true, py=true, ny=true}, true, true, place_ladder_UP_DOWN)
-register_corridor("corridor_UD", {py=true, ny=true}, false, false, place_ladder_UP_DOWN)
+--register_corridor("corridor_X", {px=true, pz=true, nx=true, nz=true, py=true, ny=true}, true, true, place_ladder_UP_DOWN)
+--register_corridor("corridor_I", {px=true, nx=true, py=true, ny=true}, true, true, place_ladder_UP_DOWN)
+--register_corridor("corridor_L", {px=true, nz=true, py=true, ny=true}, true, true, place_ladder_UP_DOWN)
+--register_corridor("corridor_E", {px=true, py=true, ny=true}, true, true, place_ladder_UP_DOWN)
+--register_corridor("corridor_T", {px=true, pz=true, nz=true, py=true, ny=true}, true, true, place_ladder_UP_DOWN)
+--register_corridor("corridor_UD", {py=true, ny=true}, false, false, place_ladder_UP_DOWN)
 
 register_corridor("treasureroom_1", {px=true}, false, false, place_treasure)
 
