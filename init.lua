@@ -1,3 +1,6 @@
+local MIN_GENERATION_HEIGHT = -1000
+
+
 -- ----------------------------------------------------------------------------
 -- Helpers:
 
@@ -488,6 +491,10 @@ local function place_room(center, vm)
 end
 
 minetest.register_on_generated(function(minp, maxp, seed)
+    if (maxp.y > MIN_GENERATION_HEIGHT) then
+        return
+    end
+
 	local t1 = os.clock()
 	local geninfo = "[mg] generates..."
 
@@ -521,11 +528,4 @@ minetest.register_on_generated(function(minp, maxp, seed)
 	local t3 = os.clock()
 	local geninfo = "[mg] done after ca.: "..calcdelay.." + "..string.format("%.2fs", t3 - t2).." = "..string.format("%.2fs", t3 - t1)
 	print(geninfo)
-end)
-
-minetest.register_alias("mapgen_singlenode", "air")
-minetest.register_on_mapgen_init(function(params) -- Automatically turn on singlenode generator
-	minetest.set_mapgen_params({
-		mgname = "singlenode"
-	})
 end)
